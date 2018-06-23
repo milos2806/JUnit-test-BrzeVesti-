@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import static org.openqa.selenium.By.className;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -110,7 +111,8 @@ public class TestCategories {
 
         WebElement lastRow = rows.get(rows.size() - 4);
 
-        WebElement editButton = lastRow.findElement(By.className("btn-default"));
+//        WebElement editButton = lastRow.findElement(By.className("btn-default"));
+        WebElement editButton = lastRow.findElement(By.cssSelector("button[title='Edit']"));
         editButton.click();
 
         WebElement titleField = driver.findElement(By.id("title"));
@@ -135,7 +137,22 @@ public class TestCategories {
     }
 
     @Test
-        public void testDeletCategory() {
-            
-        }
+    public void testDeleteFirstCategory() {
+
+        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
+        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
+
+        System.out.println("number of rows: " + rows.size());
+
+        WebElement firstRow = rows.get(0);
+
+        WebElement deleteButton = firstRow.findElement(By.cssSelector("button[title='Delete']"));
+        deleteButton.click();
+        
+//        WebElement confirmDelete = driver.findElement(By.xpath("//*[@id=\"categoryDeleteDialog\"]/div/div/div[3]/button[2]"));
+//        confirmDelete.click();
+        
+        
+
+    }
 }
