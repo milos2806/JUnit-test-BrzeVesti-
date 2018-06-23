@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import static org.openqa.selenium.By.className;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -53,17 +52,16 @@ public class TestCategories {
     public static void tearDownClass() throws InterruptedException {
         Thread.sleep(3000);
         System.out.println("@AfterClass: " + dateFormat.format(new Date()));
-
         driver.quit();
     }
 
     @Before
     public void setUp() {
-        System.out.println("@Before: " + dateFormat.format(new Date()));
-
+        
         WebElement categories = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='app-navbar-collapse']/ul[1]/li[3]/a")));
         categories.click();
-
+        
+        System.out.println("@Before: " + dateFormat.format(new Date()));
     }
 
     @After
@@ -77,6 +75,7 @@ public class TestCategories {
     public void testCreateNewCategory() {
 
         for (int i = 0; i < 3; i++) {
+            
             WebElement addCategoryButton = driver.findElement(By.className("pull-right"));
             addCategoryButton.click();
 
@@ -92,9 +91,9 @@ public class TestCategories {
             Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
 
             String expectedTitle = "Brze vesti admin  | Categories ".replaceAll("\\s+", " ").trim();
-//        System.out.println("expected title: '" + expectedUrl + "'");
+            System.out.println("expected title: '" + expectedUrl + "'");
             String actualTitle = driver.getTitle();
-//        System.out.println("actual title: '" + expectedTitle + "'");
+            System.out.println("actual title: '" + expectedTitle + "'");
 
             Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
         }
@@ -108,11 +107,12 @@ public class TestCategories {
         List<WebElement> rows = tBody.findElements(By.tagName("tr"));
 
         System.out.println("number of rows: " + rows.size());
+        
+        //dohvatanje poslednjeg reda u nizu
+        WebElement lastRow = rows.get(rows.size() - 1);
 
-        WebElement lastRow = rows.get(rows.size() - 4);
-
-//        WebElement editButton = lastRow.findElement(By.className("btn-default"));
-        WebElement editButton = lastRow.findElement(By.cssSelector("button[title='Edit']"));
+        WebElement editButton = lastRow.findElement(By.className("btn-default"));
+//        WebElement editButton = lastRow.findElement(By.("button[title='Edit']"));
         editButton.click();
 
         WebElement titleField = driver.findElement(By.id("title"));
@@ -129,9 +129,9 @@ public class TestCategories {
         Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
 
         String expectedTitle = "Brze vesti admin  | Categories ".replaceAll("\\s+", " ").trim();
-//        System.out.println("expected title: '" + expectedUrl + "'");
+        System.out.println("expected title: '" + expectedUrl + "'");
         String actualTitle = driver.getTitle();
-//        System.out.println("actual title: '" + expectedTitle + "'");
+        System.out.println("actual title: '" + expectedTitle + "'");
 
         Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
     }
@@ -148,11 +148,20 @@ public class TestCategories {
 
         WebElement deleteButton = firstRow.findElement(By.cssSelector("button[title='Delete']"));
         deleteButton.click();
-        
-//        WebElement confirmDelete = driver.findElement(By.xpath("//*[@id=\"categoryDeleteDialog\"]/div/div/div[3]/button[2]"));
-//        confirmDelete.click();
-        
-        
 
+        WebElement confirmDelete = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"categoryDeleteDialog\"]/div/div/div[3]/button[2]")));
+        confirmDelete.click();
+        
+        String expectedUrl = "http://bvtest.school.cubes.rs/admin/categories";
+        String actualUrl = driver.getCurrentUrl();
+
+        Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
+
+        String expectedTitle = "Brze vesti admin  | Categories ".replaceAll("\\s+", " ").trim();
+        System.out.println("expected title: '" + expectedUrl + "'");
+        String actualTitle = driver.getTitle();
+        System.out.println("actual title: '" + expectedTitle + "'");
+
+        Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
     }
 }
