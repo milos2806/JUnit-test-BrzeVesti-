@@ -1,13 +1,10 @@
-package region;
+package portal;
 
 import framework.Helper;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,19 +13,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class TestRegions {
+public class TestPortals {
 
     public static WebDriver driver;
     public static WebDriverWait wait;
-    public static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @BeforeClass
     public static void setUpClass() {
-
-        System.out.println("@BeforeClass" + dateFormat.format(new Date()));
-
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 10);
 
@@ -43,117 +37,121 @@ public class TestRegions {
 
         WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-primary")));
         loginButton.click();
-
         System.out.println("Page title is: " + driver.getTitle());
     }
 
     @AfterClass
     public static void tearDownClass() throws InterruptedException {
         Thread.sleep(3000);
-        System.out.println("@AfterClass: " + dateFormat.format(new Date()));
         driver.quit();
     }
 
     @Before
     public void setUp() {
-
-        WebElement regions = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Regions")));
-        regions.click();
-        System.out.println("@Before: " + dateFormat.format(new Date()));
+        WebElement portals = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-navbar-collapse\"]/ul[1]/li[5]/a")));
+        portals.click();
+        System.out.println("Page title is: " + driver.getTitle());
     }
 
     @After
     public void tearDown() throws InterruptedException {
         Thread.sleep(1000);
-        System.out.println("@After: " + dateFormat.format(new Date()));
 
     }
 
     @Test
-    public void testCreateRegion() {
+    public void testCreateNewPortal() {
 
         for (int i = 0; i < 3; i++) {
+            WebElement addPortalButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("pull-right")));
+            addPortalButton.click();
 
-            WebElement addRegionButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("pull-right")));
-            addRegionButton.click();
+            WebElement titleFieldPortal = driver.findElement(By.id("title"));
+            titleFieldPortal.sendKeys(Helper.getRandomTextPor());
 
-            WebElement titleField = driver.findElement(By.id("title"));
-            titleField.sendKeys(Helper.getRandomTextReg());
+            WebElement urlField = driver.findElement(By.id("url"));
+            urlField.sendKeys(Helper.getRandomUrl());
 
-            WebElement saveRegion = driver.findElement(By.id("save-region-button"));
-            saveRegion.click();
+            Select dropDownRegion = new Select(driver.findElement(By.name("region_id")));
+            dropDownRegion.selectByValue("550");
 
-            String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
+            WebElement saveButton = driver.findElement(By.id("save-portal-button"));
+            saveButton.click();
+
+            String expectedUrl = "http://bvtest.school.cubes.rs/admin/portals";
             String actualUrl = driver.getCurrentUrl();
 
-            Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
+            Assert.assertEquals("Url does not match.", expectedUrl, actualUrl);
 
-            String expectedTitle = "Brze vesti admin  | Regions ".replaceAll("\\s+", " ").trim();
-            System.out.println("expected title: '" + expectedUrl + "'");
+            String expectedTitle = "Brze vesti admin  | Portals".replaceAll("\\s+", " ").trim();
+            System.out.println("expected title: '" + expectedTitle + "'");
             String actualTitle = driver.getTitle();
-            System.out.println("actual title: '" + expectedTitle + "'");
+            System.out.println("actual title: '" + actualTitle + "'");
 
-            Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
-
+            Assert.assertEquals("Title does not match.", expectedTitle, actualTitle);
         }
-
     }
 
     @Test
-    public void testEditLastRegion() {
+    public void testEditLastPortal() {
         WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
         List<WebElement> rows = tBody.findElements(By.tagName("tr"));
 
-        System.out.println("Number of rows" + rows.size());
+        System.out.println("number of rows: " + rows.size());
 
         WebElement lastRow = rows.get(rows.size() - 1);
 
         WebElement editButton = lastRow.findElement(By.className("btn-default"));
         editButton.click();
 
-        WebElement titleField = driver.findElement(By.id("title"));
-        titleField.clear();
-        titleField.sendKeys(Helper.getRandomTextReg());
+        WebElement titleFieldPortal = driver.findElement(By.id("title"));
+        titleFieldPortal.sendKeys(Helper.getRandomTextPor());
 
-        WebElement saveRegionButton = driver.findElement(By.id("save-region-button"));
-        saveRegionButton.click();
+        WebElement urlField = driver.findElement(By.id("url"));
+        urlField.sendKeys(Helper.getRandomUrl());
 
-        String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
+        Select dropDownRegion = new Select(driver.findElement(By.name("region_id")));
+        dropDownRegion.selectByValue("550");
+
+        WebElement saveButton = driver.findElement(By.id("save-portal-button"));
+        saveButton.click();
+
+        String expectedUrl = "http://bvtest.school.cubes.rs/admin/portals";
         String actualUrl = driver.getCurrentUrl();
 
-        Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
+        Assert.assertEquals("Url does not match.", expectedUrl, actualUrl);
 
-        String expectedTitle = "Brze vesti admin  | Regions ".replaceAll("\\s+", " ").trim();
-        System.out.println("expected title: '" + expectedUrl + "'");
+        String expectedTitle = "Brze vesti admin  | Portals".replaceAll("\\s+", " ").trim();
+        System.out.println("expected title: '" + expectedTitle + "'");
         String actualTitle = driver.getTitle();
-        System.out.println("actual title: '" + expectedTitle + "'");
+        System.out.println("actual title: '" + actualTitle + "'");
 
-        Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
+        Assert.assertEquals("Title does not match.", expectedTitle, actualTitle);
 
     }
 
     @Test
-    public void testDeleteFirstRegion() {
+    public void testDeleteFirstPortal() {
 
         WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
         List<WebElement> rows = tBody.findElements(By.tagName("tr"));
 
-        System.out.println("Number of rows: " + rows.size());
-
+        System.out.println("number of rows: " + rows.size());
+        
         WebElement firstRow = rows.get(0);
 
         WebElement deleteButton = firstRow.findElement(By.cssSelector("button[title='Delete']"));
         deleteButton.click();
-
-        WebElement confirmDelete = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"regionDeleteDialog\"]/div/div/div[3]/button[2]")));
+        
+        WebElement confirmDelete = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"portalDeleteDialog\"]/div/div/div[3]/button[2]")));
         confirmDelete.click();
-
-        String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
+        
+        String expectedUrl = "http://bvtest.school.cubes.rs/admin/portals";
         String actualUrl = driver.getCurrentUrl();
 
         Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
 
-        String expectedTitle = "Brze vesti admin  | Regions ".replaceAll("\\s+", " ").trim();
+        String expectedTitle = "Brze vesti admin  | Portals ".replaceAll("\\s+", " ").trim();
         System.out.println("expected title: '" + expectedUrl + "'");
         String actualTitle = driver.getTitle();
         System.out.println("actual title: '" + expectedTitle + "'");
