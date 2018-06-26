@@ -1,10 +1,8 @@
 package region;
 
-import framework.Helper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,6 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.RegionsPage;
 
 public class TestRegions {
 
@@ -74,15 +73,11 @@ public class TestRegions {
 
         for (int i = 0; i < 3; i++) {
 
-            WebElement addRegionButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("pull-right")));
-            addRegionButton.click();
+            RegionsPage regionsPage = new RegionsPage();
+            regionsPage.createNewRegion(wait, driver);
 
-            WebElement titleField = driver.findElement(By.id("title"));
-            titleField.sendKeys(Helper.getRandomTextReg());
-
-            WebElement saveRegion = driver.findElement(By.id("save-region-button"));
-            saveRegion.click();
-
+//            WebElement titleField = driver.findElement(By.id("title"));
+//            titleField.sendKeys(Helper.getRandomText());
             String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
             String actualUrl = driver.getCurrentUrl();
 
@@ -101,22 +96,10 @@ public class TestRegions {
 
     @Test
     public void testEditLastRegion() {
-        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
-        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
-
-        System.out.println("Number of rows" + rows.size());
-
-        WebElement lastRow = rows.get(rows.size() - 1);
-
-        WebElement editButton = lastRow.findElement(By.className("btn-default"));
-        editButton.click();
-
-        WebElement titleField = driver.findElement(By.id("title"));
-        titleField.clear();
-        titleField.sendKeys(Helper.getRandomTextReg());
-
-        WebElement saveRegionButton = driver.findElement(By.id("save-region-button"));
-        saveRegionButton.click();
+//        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
+//        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
+        RegionsPage regionsPage = new RegionsPage();
+        regionsPage.editLastRegion(driver, wait);
 
         String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
         String actualUrl = driver.getCurrentUrl();
@@ -135,30 +118,24 @@ public class TestRegions {
     @Test
     public void testDeleteFirstRegion() {
 
-        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
-        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
+        RegionsPage regionsPage = new RegionsPage();
+        regionsPage.deleteFirstRegion(driver, wait);
+    }
 
-        System.out.println("Number of rows: " + rows.size());
+    @Test
+    public void testDisableRegion() {
+        RegionsPage regionsPage = new RegionsPage();
+//        regionsPage.disableFirstRegion(wait);
+        regionsPage.disableLastRegion(wait);
+        //regionsPage.disableRandomRegion(wait);
+    }
 
-        WebElement firstRow = rows.get(0);
-
-        WebElement deleteButton = firstRow.findElement(By.cssSelector("button[title='Delete']"));
-        deleteButton.click();
-
-        WebElement confirmDelete = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"regionDeleteDialog\"]/div/div/div[3]/button[2]")));
-        confirmDelete.click();
-
-        String expectedUrl = "http://bvtest.school.cubes.rs/admin/regions";
-        String actualUrl = driver.getCurrentUrl();
-
-        Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
-
-        String expectedTitle = "Brze vesti admin  | Regions ".replaceAll("\\s+", " ").trim();
-        System.out.println("expected title: '" + expectedUrl + "'");
-        String actualTitle = driver.getTitle();
-        System.out.println("actual title: '" + expectedTitle + "'");
-
-        Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
+    @Test
+    public void testEnableFirstRegion() {
+        RegionsPage regionsPage = new RegionsPage();
+        //regionsPage.enableFirstRegion(wait);
+        regionsPage.enableLastRegion(wait);
 
     }
+
 }

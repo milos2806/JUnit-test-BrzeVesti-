@@ -17,6 +17,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.CategoriesPage;
 
 public class TestCategories {
 
@@ -74,16 +75,26 @@ public class TestCategories {
     @Test
     public void testCreateNewCategory() {
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             
-            WebElement addCategoryButton = driver.findElement(By.className("pull-right"));
-            addCategoryButton.click();
+            CategoriesPage categoriesPage = new CategoriesPage();
+                    
+//            categoriesPage.clickOnAddCategoryButton(driver);
+            
+//            WebElement addCategoryButton = driver.findElement(By.className("pull-right"));
+//            addCategoryButton.click();
+        
+//              categoriesPage.sendTextOnTitleField(driver);
 
-            WebElement titleField = driver.findElement(By.id("title"));
-            titleField.sendKeys(Helper.getRandomText());
+//            WebElement titleField = driver.findElement(By.id("title"));
+//            titleField.sendKeys(Helper.getRandomText());
 
-            WebElement saveButton = driver.findElement(By.id("save-category-button"));
-            saveButton.click();
+//              categoriesPage.clickOnSaveCategoryButton(driver);
+
+//            WebElement saveButton = driver.findElement(By.id("save-category-button"));
+//            saveButton.click();
+
+            categoriesPage.addNewCategory(driver);
 
             String expectedUrl = "http://bvtest.school.cubes.rs/admin/categories";
             String actualUrl = driver.getCurrentUrl();
@@ -101,28 +112,14 @@ public class TestCategories {
     }
 
     @Test
-    public void testEditCategory() {
-//            WebElement table = driver.findElement(By.id("categoriesTable"));
-        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
-        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
-
-        System.out.println("number of rows: " + rows.size());
+    public void testEditLastCategory() {
         
-        //dohvatanje poslednjeg reda u nizu
-        WebElement lastRow = rows.get(rows.size() - 1);
-
-        WebElement editButton = lastRow.findElement(By.className("btn-default"));
-//        WebElement editButton = lastRow.findElement(By.("button[title='Edit']"));
-        editButton.click();
-
-        WebElement titleField = driver.findElement(By.id("title"));
-        // titleField.clear(); ---> sluzi da ocisti title polje da bi mogli da unesemo novu vrednost
-        titleField.clear();
-        titleField.sendKeys(Helper.getRandomText());
-
-        WebElement saveButton = driver.findElement(By.id("save-category-button"));
-        saveButton.click();
-
+        CategoriesPage categoriesPage = new CategoriesPage();
+        categoriesPage.editLastCategory(driver , wait);
+        
+        
+//            WebElement table = driver.findElement(By.id("categoriesTable"));
+        
         String expectedUrl = "http://bvtest.school.cubes.rs/admin/categories";
         String actualUrl = driver.getCurrentUrl();
 
@@ -135,33 +132,20 @@ public class TestCategories {
 
         Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
     }
+    
+    @Test 
+    public void testEditFirstCategory() {
+        CategoriesPage categoriesPage = new CategoriesPage();
+        categoriesPage.editFirstCategory(driver , wait);
+
+        Assert.assertEquals("Url title doesen't match", "http://bvtest.school.cubes.rs/admin/categories", driver.getCurrentUrl());
+    }
 
     @Test
     public void testDeleteFirstCategory() {
-
-        WebElement tBody = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ui-sortable")));
-        List<WebElement> rows = tBody.findElements(By.tagName("tr"));
-
-        System.out.println("number of rows: " + rows.size());
-
-        WebElement firstRow = rows.get(0);
-
-        WebElement deleteButton = firstRow.findElement(By.cssSelector("button[title='Delete']"));
-        deleteButton.click();
-
-        WebElement confirmDelete = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"categoryDeleteDialog\"]/div/div/div[3]/button[2]")));
-        confirmDelete.click();
         
-        String expectedUrl = "http://bvtest.school.cubes.rs/admin/categories";
-        String actualUrl = driver.getCurrentUrl();
-
-        Assert.assertEquals("Url se ne poklapa", expectedUrl, actualUrl);
-
-        String expectedTitle = "Brze vesti admin  | Categories ".replaceAll("\\s+", " ").trim();
-        System.out.println("expected title: '" + expectedUrl + "'");
-        String actualTitle = driver.getTitle();
-        System.out.println("actual title: '" + expectedTitle + "'");
-
-        Assert.assertEquals("Title doesn't match", expectedTitle, actualTitle);
+        CategoriesPage categoriesPage = new CategoriesPage();
+        categoriesPage.deleteFirstCategory(driver , wait);
+        
     }
 }

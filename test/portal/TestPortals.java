@@ -67,7 +67,7 @@ public class TestPortals {
             addPortalButton.click();
 
             WebElement titleFieldPortal = driver.findElement(By.id("title"));
-            titleFieldPortal.sendKeys(Helper.getRandomTextPor());
+            titleFieldPortal.sendKeys(Helper.getRandomText());
 
             WebElement urlField = driver.findElement(By.id("url"));
             urlField.sendKeys(Helper.getRandomUrl());
@@ -105,7 +105,7 @@ public class TestPortals {
         editButton.click();
 
         WebElement titleFieldPortal = driver.findElement(By.id("title"));
-        titleFieldPortal.sendKeys(Helper.getRandomTextPor());
+        titleFieldPortal.sendKeys(Helper.getRandomText());
 
         WebElement urlField = driver.findElement(By.id("url"));
         urlField.sendKeys(Helper.getRandomUrl());
